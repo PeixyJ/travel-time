@@ -45,7 +45,4 @@ public class BarkHandler {
         });
     }
 
-    public static void main(String[] args) {
-        sendBark("biCzc3WmmkHY9FSpJvovK9", "123");
-    }
 }
