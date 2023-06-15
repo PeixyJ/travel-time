@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import priv.peixinyi.tt.alert.BarkHandler;
 import priv.peixinyi.tt.context.TTContext;
 import priv.peixinyi.tt.entity.TravelRecord;
+import priv.peixinyi.tt.entity.User;
 import priv.peixinyi.tt.pojo.enums.TravelType;
 import priv.peixinyi.tt.service.TravelRecordService;
+import priv.peixinyi.tt.service.UserService;
 
 import java.util.Date;
 import java.util.UUID;
@@ -22,6 +25,8 @@ import java.util.UUID;
 @RequestMapping("/travelRecord")
 @AllArgsConstructor
 public class TravelRecordController {
+
+    UserService userService;
 
     TravelRecordService travelRecordService;
 
@@ -106,8 +111,20 @@ public class TravelRecordController {
         etr.setTravelType(TravelType.END.name());
         etr.setSite(site);
         travelRecordService.save(etr);
+
+        User user = userService.getUserByOpenId(TTContext.getOpenId());
+        String alert = "您的小伙伴" + user.getNickname() + "刚刚在" + site + "结束了一次行程,行驶了" + dis.intValue() + "米,用时" + second2MinuteAndSecond(etr.getDrivingTime()) + "!";
+        BarkHandler.sendBark(user.getBarkId(), alert);
     }
 
+    public static String second2MinuteAndSecond(Long drivingTime) {
+        long minute = drivingTime / 60;
+        long second = drivingTime % 60;
+        if (minute == 0) {
+            return second + "秒";
+        }
+        return minute + "分" + second + "秒";
+    }
 
     /**
      * 获取两个经纬度之间的距离
