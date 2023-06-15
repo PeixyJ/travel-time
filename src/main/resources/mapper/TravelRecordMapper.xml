@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.peixinyi.tt.mapper.TravelRecordMapper">
+  <resultMap id="BaseResultMap" type="priv.peixinyi.tt.entity.TravelRecord">
+    <!--@mbg.generated-->
+    <!--@Table travel_record-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="travel_code" jdbcType="VARCHAR" property="travelCode" />
+    <result column="travel_time" jdbcType="TIMESTAMP" property="travelTime" />
+    <result column="driving_time" jdbcType="BIGINT" property="drivingTime" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="travel_distance" jdbcType="INTEGER" property="travelDistance" />
+    <result column="travel_type" jdbcType="VARCHAR" property="travelType" />
+    <result column="site" jdbcType="VARCHAR" property="site" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, user_id, travel_code, travel_time, driving_time, longitude, latitude, travel_distance, 
+    travel_type, site
+  </sql>
+</mapper>
