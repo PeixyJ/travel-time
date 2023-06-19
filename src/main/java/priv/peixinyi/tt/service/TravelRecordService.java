@@ -1,10 +1,13 @@
 package priv.peixinyi.tt.service;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import priv.peixinyi.tt.mapper.TravelRecordMapper;
 import priv.peixinyi.tt.entity.TravelRecord;
+
+import java.util.Date;
 
 /**
  * ${description}
@@ -57,6 +60,22 @@ public class TravelRecordService extends ServiceImpl<TravelRecordMapper, TravelR
     public TravelRecord getTravelRecordLastByUserId(Integer userId) {
         LambdaQueryWrapper<TravelRecord> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(TravelRecord::getUserId, userId);
+        queryWrapper.orderByDesc(TravelRecord::getTravelTime);
+        queryWrapper.last("limit 1");
+        return this.getOne(queryWrapper);
+    }
+
+    /**
+     * 根据用户ID获取最后一条行程
+     *
+     * @return priv.peixinyi.tt.entity.TravelRecord
+     * @author peixinyi
+     * @since 11:06 2023/6/15
+     */
+    public TravelRecord getTravelRecordLastByUserId(Integer userId, Integer timeOut) {
+        LambdaQueryWrapper<TravelRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TravelRecord::getUserId, userId);
+        queryWrapper.gt(TravelRecord::getTravelTime, DateUtil.offsetMinute(new Date(), -timeOut));
         queryWrapper.orderByDesc(TravelRecord::getTravelTime);
         queryWrapper.last("limit 1");
         return this.getOne(queryWrapper);

@@ -44,7 +44,7 @@ public class TravelRecordController {
     public void drive(@RequestParam String longitude,
                       @RequestParam String latitude,
                       @RequestParam String site) {
-        TravelRecord travelRecordLastByUserId = travelRecordService.getTravelRecordLastByUserId(TTContext.getUserId());
+        TravelRecord travelRecordLastByUserId = travelRecordService.getTravelRecordLastByUserId(TTContext.getUserId(), 180);
         if (travelRecordLastByUserId == null) {
             connect(longitude, latitude, site);
             return;
