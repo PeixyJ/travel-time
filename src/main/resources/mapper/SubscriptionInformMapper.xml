@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="priv.peixinyi.tt.mapper.SubscriptionInformMapper">
+  <resultMap id="BaseResultMap" type="priv.peixinyi.tt.entity.SubscriptionInform">
+    <!--@mbg.generated-->
+    <!--@Table subscription_inform-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="sub_id" jdbcType="INTEGER" property="subId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, user_id, sub_id, `status`
+  </sql>
+
+  <select id="selectMySubPage" resultType="priv.peixinyi.tt.pojo.response.SubResponse">
+      select u1.id       as user_id,
+             u1.nickname as nickname,
+             u2.id       as sub_id,
+             u2.nickname as sub_nickname,
+             si.status   as status
+      from subscription_inform si
+               left join user u1 on si.user_id = u1.id
+               left join user u2 on si.sub_id = u2.id
+      where si.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectSubMePage" resultType="priv.peixinyi.tt.pojo.response.SubResponse">
+      select u1.id       as user_id,
+             u1.nickname as nickname,
+             u2.id       as sub_id,
+             u2.nickname as sub_nickname,
+             si.status   as status
+      from subscription_inform si
+               left join user u1 on si.user_id = u1.id
+               left join user u2 on si.sub_id = u2.id
+      where si.sub_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

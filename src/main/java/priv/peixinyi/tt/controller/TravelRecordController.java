@@ -1,5 +1,6 @@
 package priv.peixinyi.tt.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,13 +8,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import priv.peixinyi.tt.alert.BarkHandler;
 import priv.peixinyi.tt.context.TTContext;
+import priv.peixinyi.tt.entity.SubscriptionInform;
 import priv.peixinyi.tt.entity.TravelRecord;
 import priv.peixinyi.tt.entity.User;
+import priv.peixinyi.tt.pojo.enums.SubState;
 import priv.peixinyi.tt.pojo.enums.TravelType;
+import priv.peixinyi.tt.service.SubscriptionInformService;
 import priv.peixinyi.tt.service.TravelRecordService;
 import priv.peixinyi.tt.service.UserService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,6 +32,8 @@ import java.util.UUID;
 public class TravelRecordController {
 
     UserService userService;
+
+    SubscriptionInformService subscriptionInformService;
 
     TravelRecordService travelRecordService;
 
@@ -114,6 +121,18 @@ public class TravelRecordController {
 
         User user = userService.getUserByOpenId(TTContext.getOpenId());
         String alert = "您的小伙伴" + user.getNickname() + "刚刚在" + site + "结束了一次行程,行驶了" + dis.intValue() + "米,用时" + second2MinuteAndSecond(etr.getDrivingTime()) + "!";
+
+        //获取已经通过确定的订阅
+        LambdaQueryWrapper<SubscriptionInform> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SubscriptionInform::getSubId, TTContext.getUserId());
+        queryWrapper.eq(SubscriptionInform::getStatus, SubState.AGREE.getCode());
+        List<SubscriptionInform> subList = subscriptionInformService.list(queryWrapper);
+        String finalAlert = alert;
+        subList.forEach(sub -> {
+            User subUser = userService.getById(sub.getUserId());
+            BarkHandler.sendBark(subUser.getBarkId(), finalAlert);
+        });
+        alert = alert + "/n共计通知:" + subList.size() + "人";
         BarkHandler.sendBark(user.getBarkId(), alert);
     }
 
