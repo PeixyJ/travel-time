@@ -132,7 +132,7 @@ public class TravelRecordController {
             User subUser = userService.getById(sub.getUserId());
             BarkHandler.sendBark(subUser.getBarkId(), finalAlert);
         });
-        alert = alert + "/n共计通知:" + subList.size() + "人";
+        alert = alert + "/共计通知:" + subList.size() + "人";
         BarkHandler.sendBark(user.getBarkId(), alert);
     }
 
