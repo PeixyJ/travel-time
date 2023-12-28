@@ -26,6 +26,9 @@ java -jar jar/app.jar
 ```bash
 docker run -idt \
     --name drivetime \
+    -e DB_URL:jdbc:mysql://localhost:3306/travel_time \
+    -e DB_USERNAME:root \
+    -e DB_PASSWORD:root \
     -p 8080:8080 \
     -v ./resources:/resources \
     travel-time
